@@ -1,15 +1,25 @@
-import pandas as pd 
-from glob import glob
+import pandas as pd
 
-files_dir = "path_to_xlsx_files"
+# List of Excel file paths
+file_paths = [
+    'friday_voucher_data.xlsx',
+    'saturday_voucher_data.xlsx',
+    'sunday_voucher_data.xlsx',
+    'thursday_voucher_data.xlsx',
+    'tuesday_voucher_data.xlsx',
+    'wednesday_voucher_data.xlsx'
+]
 
-file_path = glob(files_dir + "/*.xlsx")
+# Read and merge all Excel files into a single DataFrame
+dataframes = [pd.read_excel(file) for file in file_paths]
+merged_df = pd.concat(dataframes, ignore_index=True)
 
-merged_df = pd.concat([pd.read_excel("file") for file in file_path], ignore_index=True)
+# Basic data cleaning
+merged_df.drop_duplicates(inplace=True)  # Remove duplicate rows
+merged_df.fillna('', inplace=True)        # Fill missing values with empty strings
 
-df = df.dropna(inplace=True)
-df = df.fillna(inpace=True)
+# Save the cleaned DataFrame to a new Excel file
+output_file = 'cleaned_voucher_data.xlsx'
+merged_df.to_excel(output_file, index=False)
 
-output_file = (files_dir + "/cleaned_data.xlsx", merged_df.to_excel)
-
-print(f"Data cleaning complete. Cleaned file saved as {output_file}.")
+print(f"Data cleaning complete. Cleaned file saved as '{output_file}'.")
